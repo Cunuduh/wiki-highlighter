@@ -1,0 +1,20 @@
+{
+  "name": "wikidot-highlighter",
+  "version": "1.0.0",
+  "description": "Apply syntax highlighting to text for use in Wikidot",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "cunuduh",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/he": "^1.2.0",
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4"
+  },
+  "dependencies": {
+    "he": "^1.2.0",
+    "highlight.js": "^11.8.0"
+  }
+}
