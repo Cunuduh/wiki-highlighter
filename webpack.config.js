@@ -13,7 +13,8 @@ const stylesHandler = 'style-loader';
 const config = {
     entry: './src/index.ts',
     output: {
-        path: path.resolve(__dirname, 'dist'),
+        filename: 'bundle.js',
+        path: '/',
     },
     devServer: {
         open: true,
