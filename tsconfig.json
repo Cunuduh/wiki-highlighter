@@ -3,7 +3,7 @@
     "allowSyntheticDefaultImports": true,
     "moduleResolution": "NodeNext",
     "noImplicitAny": false,
-    "module": "es6",
+    "module": "NodeNext",
     "target": "es5",
     "allowJs": true
   },

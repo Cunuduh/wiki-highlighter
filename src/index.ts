@@ -26,14 +26,14 @@ function highlight(str: string, lang: string) {
 function format(str: string) {
     str = str.replace(/ {2,}/g, "@@$&@@")
     .replace(/--/g, "@@--@@")
+    .replace(/\*\*/g, "@@**@@")
     .replace(/<\/span>/g, "[[/span]]")
-    .replace(/hljs/g, "--hl")
-    .replace(/<span class="(.*?)">/g, '[[span style="color:var($1)"]]')
-    .replace(/\[\[span style="color:var\((.*?)\)"]]/g, (match: string, p1: string) => {
+    .replace(/hljs/g, "hl")
+    .replace(/<span class="(.*?)">/g, '[[span class="$1"]]')
+    .replace(/\[\[span class="(.*?)"]]/g, (match: string, p1: string) => {
         const part = p1.split(/\s(.+)/)[0].replace(/_/g, "")
-        return `[[span style="color:var(${part})"]]`
+        return `[[span class="${part}"]]`
     })
-    .replace(/\*\*(.*?)\*\*/g, "@@$1@@")
     .replace(/var\(--hl-subst\)|var\(--hl-params\)/g, "initial")
     return str
 }
