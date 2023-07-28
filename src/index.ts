@@ -1,8 +1,11 @@
 import hljs from "highlight.js";
+import zig from "highlightjs-zig";
 
 const textarea = document.getElementById("code") as HTMLTextAreaElement
 const langInput = document.getElementById("language") as HTMLInputElement
 const button = document.getElementById("highlight") as HTMLInputElement
+
+hljs.registerLanguage("zig", zig)
 
 button.addEventListener("click", (evt) => {
     evt.preventDefault()
@@ -15,7 +18,7 @@ button.addEventListener("click", (evt) => {
 
 function highlight(str: string, lang: string) {
     if (lang && hljs.getLanguage(lang)) {
-        let out = hljs.highlight(lang, str).value
+        let out = hljs.highlight(str, { language: lang }).value
         return unescape(format(out))
     }
     return ""
