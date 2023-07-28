@@ -47,10 +47,15 @@
         font-family: var(--mono-font);
         
     }
-    textarea:focus, input:not(#highlight):focus {
+    textarea:focus {
         outline: none;
         border-bottom: 3px solid rgb(var(--border-color));
         margin-bottom: -1px;
+    }
+    input:not(#highlight):focus {
+        outline: none;
+        border-bottom: 3px solid rgb(var(--border-color));
+        margin-bottom: -2px;
     }
     #code-form {
         display: flex;

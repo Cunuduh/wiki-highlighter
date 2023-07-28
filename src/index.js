@@ -1,5 +1,4 @@
 import hljs from "highlight.js";
-import he from "he";
 
 const textarea = document.getElementById("code") || document.createElement("textarea")
 const langInput = document.getElementById("language")
@@ -18,7 +17,7 @@ function highlight(str, lang) {
     if (lang && hljs.getLanguage(lang)) {
         try {
             let out = hljs.highlight(lang, str).value
-            return he.unescape(format(out))
+            return unescape(format(out))
         } catch (__) {}
     }
     return ""
@@ -36,4 +35,8 @@ function format(str) {
     .replace(/\*\*(.*?)\*\*/g, "@@$1@@")
     .replace(/var\(--hl-subst\)|var\(--hl-params\)/g, "initial")
     return str
+}
+function unescape(str) {
+    let doc = new DOMParser().parseFromString(str, "text/html")
+    return doc.documentElement.textContent
 }
