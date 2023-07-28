@@ -14,7 +14,7 @@ const config = {
     entry: './src/index.ts',
     output: {
         filename: 'bundle.js',
-        path: '/',
+        path: path.resolve(__dirname, '')
     },
     devServer: {
         open: true,
