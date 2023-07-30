@@ -12,8 +12,8 @@ button.addEventListener("click", (evt) => {
     const lang = langInput.value
     const code = textarea.value
     const highlighted = highlight(code, lang) || code
-
     textarea.value = highlighted
+    textarea.select()
 }, false)
 
 function highlight(str: string, lang: string) {
@@ -23,10 +23,9 @@ function highlight(str: string, lang: string) {
     }
     return ""
 }
+
 function format(str: string) {
-    str = str.replace(/ {2,}/g, "@@$&@@")
-    .replace(/--/g, "@@--@@")
-    .replace(/\*\*/g, "@@**@@")
+    return escapeWikidot(str)
     .replace(/<\/span>/g, "[[/span]]")
     .replace(/hljs/g, "hl")
     .replace(/<span class="(.*?)">/g, '[[span class="$1"]]')
@@ -34,8 +33,32 @@ function format(str: string) {
         const part = p1.split(/\s(.+)/)[0].replace(/_/g, "")
         return `[[span class="${part}"]]`
     })
-    .replace(/var\(--hl-subst\)|var\(--hl-params\)/g, "initial")
+}
+function escapeWikidot(str: string) {
     return str
+    .replace(/^\s{2,}/gm, "@@$&@@")
+    .replace(/--(.*?)--/gm, "@@--@@$1@@--@@")
+    .replace(/\[\!-- (.*?) --]/gms, "@@[!--@@ $1 @@--]@@")
+    .replace(/^: /gm, "@@:@@")
+    .replace(/^# /gm, "@@#@@")
+    .replace(/^\* /gm, "@@*@@")
+    .replace(/`{1,2}/g, "@@$&@@")
+    .replace(/^\+{1,6}(\s|$)/g, "$1@@+$2")
+    .replace(/\[\[(.*?)]]/gms, "@@[[@$1]]@@")
+    .replace(/\^\^(.*?)\^\^/gms, "@@^^$1^^@@")
+    .replace(/^\|+/gm, "@@$&@@")
+    .replace(/,,(.*?)"/gms, "@@,,$1\"@@")
+    .replace(/,,(.*?),,/gms, "@@,,$1,,@@")
+    .replace(/>>(.*?)<</gms, "@@>>$1<<@@")
+    .replace(/^>+/gm, "@@$&@@")
+    .replace(/{{(.*?)}}/gms, "@@{{@@$1@@}}@@")
+    .replace(/__(.*?)__/gms, "@@__@@$1@@__@@")
+    .replace(/\/\/\*\*(.*?)\*\*\/\//gms, "@@//**@@$1@@**//@@")
+    .replace(/(?<!@@)\/\/(.*?)\/\/(?!@@)/gms, "@@//@@$1@@//@@")
+    .replace(/(?<!\/\/)\*\*(?!\/\/)(.*?)(?<!\/\/)\*\*(?!\/\/)/gm, "@@**$1**@@")
+    .replace(/\.\.\./g, "@@...@@")
+    .replace(/(?<!@@)--(?!@@)/g, "@@--@@")
+    .replace(/(?<!\*\*|\/\/)\*\*(?!\*\*|\/\/)/g, "@@**@@")
 }
 function unescape(str: string) {
     let doc = new DOMParser().parseFromString(str, "text/html")

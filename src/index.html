@@ -9,6 +9,8 @@
 
 <body>
     <h1>Wiki Highlighter</h1>
+    <h3>Created by <em>Cunuduh</em></h3>
+    <p>Paste your code into the box below, select the language, and click "Highlight".</p>
     <form id="code-form">
         <textarea id="code" name="code" rows="10" cols="50"></textarea>
         <label for="language">Language (supports <a href="https://github.com/highlightjs/highlight.js/blob/main/SUPPORTED_LANGUAGES.md">these languages</a>, plus Zig):</label>
@@ -31,8 +33,9 @@
     }
     body {
         background-color: #f1f1f1;
+        font: var(--base-font-size) var(--ui-font);
     }
-    h1 {
+    h1, h3 {
         font-family: var(--header-font);
         text-align: center;
     }
@@ -68,6 +71,9 @@
         align-items: center;
         max-width: 1000px;
         margin: 0 auto;
+    }
+    p {
+        text-align: center;
     }
     #highlight {
         color: white;
