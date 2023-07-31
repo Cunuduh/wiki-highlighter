@@ -36,9 +36,9 @@ function format(str: string) {
 }
 function escapeWikidot(str: string) {
     return str
-    .replace(/^\s{2,}/gm, "@@$&@@")
+    .replace(/ {2,}/g, "@@$&@@")
     .replace(/--(.*?)--/gm, "@@--@@$1@@--@@")
-    .replace(/\[\!-- (.*?) --]/gms, "@@[!--@@ $1 @@--]@@")
+    .replace(/\[\!-- (.*?) --]/gms, "@@[!--@@$1@@--]@@")
     .replace(/^: /gm, "@@:@@")
     .replace(/^# /gm, "@@#@@")
     .replace(/^\* /gm, "@@*@@")
