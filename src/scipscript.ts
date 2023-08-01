@@ -11,16 +11,22 @@ const scipscript: LanguageFn = (hljs: HLJSApi) => {
     let tsLanguage = typescriptLang(hljs);
     tsLanguage.contains[16].beginKeywords += "match with default"; // function-like keywords
     const TYPES = [
+        "error",
         "u8",
         "u16",
         "u32",
         "u64",
+        "u128",
         "i8",
         "i16",
         "i32",
         "i64",
+        "i128",
+        "f16",
         "f32",
         "f64",
+        "f80",
+        "f128",
     ]
     if (typeof tsLanguage.keywords !== 'string') {
         tsLanguage.keywords.built_in.push(...TYPES);
