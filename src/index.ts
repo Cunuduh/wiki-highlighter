@@ -19,25 +19,26 @@ button.addEventListener("click", async (evt) => {
 }, false)
 
 async function highlight(str: string, lang: string) {
-    if (hljs.getLanguage(lang)) {
+    if (lang) {
+        if (!hljs.getLanguage(lang)) {
+            const module = await tryImport(lang)
+            hljs.registerLanguage(lang, module.default)
+        }
         let out = hljs.highlight(str, { language: lang }).value;
         return unescape(format(out));
     }
-    if (lang) {
-        try {
-            const imported = await import(
-                /* webpackChunkName: "hljs-[request]" */
-                /* webpackMode: "lazy" */
-                `../node_modules/highlight.js/lib/languages/${lang}.js`)
-            hljs.registerLanguage(lang, imported.default)
-        } catch (err) {
-            console.error(`Failed to load language module for ${lang}:`, err);
-        }
-    }
-
     return "";
 }
-
+async function tryImport(lang: string) {
+    try {
+        return await import(
+            /* webpackChunkName: "hljs-[request]" */
+            /* webpackMode: "lazy" */
+            `../node_modules/highlight.js/lib/languages/${lang}.js`)
+    } catch (err) {
+        console.error(`Failed to load language module for ${lang}:`, err);
+    }
+}
 function format(str: string) {
     return escapeWikidot(str)
     .replace(/<\/span>/g, "[[/span]]")
