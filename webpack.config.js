@@ -11,7 +11,7 @@ const stylesHandler = 'style-loader';
 
 
 const config = {
-    entry: './src/index.ts',
+    entry: './src/entry.ts',
     output: {
         filename: 'bundle.js',
         path: path.resolve(__dirname, 'docs')

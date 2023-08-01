@@ -1,10 +1,12 @@
 import hljs from "highlight.js/lib/core";
+import scipscript from "./scipscript";
 import zig from "highlightjs-zig";
 
 const textarea = document.getElementById("code") as HTMLTextAreaElement
 const langInput = document.getElementById("language") as HTMLInputElement
 const button = document.getElementById("highlight") as HTMLInputElement
 
+hljs.registerLanguage("scipscript", scipscript)
 hljs.registerLanguage("zig", zig)
 
 button.addEventListener("click", async (evt) => {
@@ -17,21 +19,20 @@ button.addEventListener("click", async (evt) => {
 }, false)
 
 async function highlight(str: string, lang: string) {
+    if (hljs.getLanguage(lang)) {
+        let out = hljs.highlight(str, { language: lang }).value;
+        return unescape(format(out));
+    }
     if (lang) {
         try {
             const imported = await import(
                 /* webpackChunkName: "hljs-[request]" */
                 /* webpackMode: "lazy" */
-                `../node_modules/highlight.js/lib/languages/${lang}.js`);
-            hljs.registerLanguage(lang, imported.default);
+                `../node_modules/highlight.js/lib/languages/${lang}.js`)
+            hljs.registerLanguage(lang, imported.default)
         } catch (err) {
             console.error(`Failed to load language module for ${lang}:`, err);
         }
-    }
-
-    if (hljs.getLanguage(lang)) {
-        let out = hljs.highlight(str, { language: lang }).value;
-        return unescape(format(out));
     }
 
     return "";
@@ -67,8 +68,8 @@ function escapeWikidot(str: string) {
         .replace(/{{(.*?)}}/gms, "@<{{>@$1@<}}>@")
         .replace(/__(.*?)__/gms, "@<__>@$1@<__>@")
         .replace(/\/\/\*\*(.*?)\*\*\/\//gms, "@<//**>@$1@<**//>@")
-        .replace(/(?<!@@)\/\/(.*?)\/\/(?!@@)/gms, "@<//>@$1@<//>@")
-        .replace(/(?<!\/\/)\*\*(?!\/\/)(.*?)(?<!\/\/)\*\*(?!\/\/)/gm, "@<**$1**>@")
+        .replace(/\/\/(?!\*\*)(.*?)(?!\*\*)\/\//gms, "&#64;&lt;//&gt;&#64;$1&#64;&lt;//&gt;&#64;")
+        .replace(/(?<!\/\/)\*\*(?!\/\/)(.*?)(?<!\/\/)\*\*(?!\/\/)/gm, "@<**>@$1@<**>@")
         .replace(/\.\.\./g, "@<...>@")
         .replace(/(?<!@@)--(?!@@)/g, "@<-->@")
         .replace(/(?<!\*\*|\/\/)\*\*(?!\*\*|\/\/)/g, "@<**>@")
