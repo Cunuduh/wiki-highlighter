@@ -43,10 +43,6 @@ function format(str: string) {
     return escapeWikidot(str)
     .replace(/<\/span>/g, "[[/span]]")
     .replace(/<span class="(.*?)">/g, '[[span class="$1"]]')
-    .replace(/\[\[span class="(.*?)"]]/g, (match: string, p1: string) => {
-        const part = p1.split(/\s(.+)/)[0].replace(/_/g, "")
-        return `[[span class="${part}"]]`
-    })
 }
 function escapeWikidot(str: string) {
     return str
