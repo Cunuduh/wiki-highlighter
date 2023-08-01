@@ -1,4 +1,4 @@
-import hljs from "highlight.js";
+import hljs from "highlight.js/lib/core";
 import zig from "highlightjs-zig";
 
 const textarea = document.getElementById("code") as HTMLTextAreaElement
@@ -7,21 +7,34 @@ const button = document.getElementById("highlight") as HTMLInputElement
 
 hljs.registerLanguage("zig", zig)
 
-button.addEventListener("click", (evt) => {
+button.addEventListener("click", async (evt) => {
     evt.preventDefault()
     const lang = langInput.value
     const code = textarea.value
-    const highlighted = highlight(code, lang) || code
+    const highlighted = await highlight(code, lang) || code
     textarea.value = highlighted
     textarea.select()
 }, false)
 
-function highlight(str: string, lang: string) {
-    if (lang && hljs.getLanguage(lang)) {
-        let out = hljs.highlight(str, { language: lang }).value
-        return unescape(format(out))
+async function highlight(str: string, lang: string) {
+    if (lang) {
+        try {
+            const imported = await import(
+                /* webpackChunkName: "hljs-[request]" */
+                /* webpackMode: "lazy" */
+                `../node_modules/highlight.js/lib/languages/${lang}.js`);
+            hljs.registerLanguage(lang, imported.default);
+        } catch (err) {
+            console.error(`Failed to load language module for ${lang}:`, err);
+        }
     }
-    return ""
+
+    if (hljs.getLanguage(lang)) {
+        let out = hljs.highlight(str, { language: lang }).value;
+        return unescape(format(out));
+    }
+
+    return "";
 }
 
 function format(str: string) {
@@ -35,7 +48,8 @@ function format(str: string) {
 }
 function escapeWikidot(str: string) {
     return str
-        .replace(/ {2,}/g, "@<$&>@")
+        .replace(/@@(.*?)@@/gms, "@<@@>@$1@<@@>@")
+        .replace(/  +/g, "@<$&>@")
         .replace(/--(.*?)--/gm, "@<-->@$1@<-->@")
         .replace(/\[\!-- (.*?) --]/gms, "@<[!-->@$1@<--]>@")
         .replace(/^: /gm, "@<:>@")
