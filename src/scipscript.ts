@@ -10,7 +10,7 @@ Description: SCiPScript is a fictional programming language made for the SCP Fou
 const scipscript: LanguageFn = (hljs: HLJSApi) => {
     let tsLanguage = typescriptLang(hljs);
     tsLanguage.contains[16].beginKeywords += "match with default"; // function-like keywords
-    const TYPES = [
+    const TYPES = [ 
         "error",
         "u8",
         "u16",
@@ -29,15 +29,19 @@ const scipscript: LanguageFn = (hljs: HLJSApi) => {
         "f128",
     ]
     if (typeof tsLanguage.keywords !== 'string') {
-        tsLanguage.keywords.built_in.push(...TYPES);
-        if (typeof tsLanguage.contains[29].keywords !== 'string') {
-            tsLanguage.contains[29].keywords.built_in.push(...TYPES);
-        }
+        tsLanguage.keywords.built_in = tsLanguage.keywords.built_in.filter(keyword =>
+            !/\b(?:string|number|any|unknown|bigint)\b/g.test(keyword)
+        ).concat(TYPES);
+    }
+    if (typeof tsLanguage.contains[29].keywords !== 'string') {
+        tsLanguage.contains[29].keywords = tsLanguage.contains[29].keywords.built_in.filter(keyword =>
+            !/\b(?:string|number|any|unknown|bigint)\b/g.test(keyword)
+        ).concat(TYPES);
     }
     const KEYWORDS: string[] = [
         "match",
         "when",
-        "errortype",
+        "errorset",
         "default",
         "shared",
         "with",
@@ -48,7 +52,9 @@ const scipscript: LanguageFn = (hljs: HLJSApi) => {
             aliases: ['scipscript', 'scips'],
             keywords: {
                 $pattern: tsLanguage.keywords.$pattern,
-                keyword: tsLanguage.keywords.keyword.concat(KEYWORDS),
+                keyword: tsLanguage.keywords.keyword.concat(KEYWORDS).filter(keyword =>
+                    !/\b(?:switch|case|throw)\b/g.test(keyword)
+                ),
                 literal: tsLanguage.keywords.literal,
                 built_in: tsLanguage.keywords.built_in,
                 "variable.language": tsLanguage.keywords["variable.language"],
@@ -58,7 +64,7 @@ const scipscript: LanguageFn = (hljs: HLJSApi) => {
             illegal: tsLanguage.illegal,
         }
     }
-    return tsLanguage;
+    return tsLanguage
 }
 
 export default scipscript;

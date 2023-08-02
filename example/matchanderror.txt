@@ -1,4 +1,4 @@
-errortype ParseError {
+errorset ParseError {
   InvalidChar,
   Overflow,
 };
@@ -6,7 +6,7 @@ errortype ParseError {
 function parseU64(buf: u8[], radix: u8): u64 | ParseError {
   let x: u64 = 0;
 
-  for (c of buf) {
+  for (const c of buf) {
     const digit = charToDigit(c);
 
     if (digit >= radix) {
@@ -26,18 +26,17 @@ function parseU64(buf: u8[], radix: u8): u64 | ParseError {
 }
 function charToDigit(c: u8): u8 {
   return match (c) {
-    if (('0'..'9').includes(c)): code - '0';
-    if (('A'..'Z').includes(c)): code - 'A' + 10;
-    if (('a'..'z').includes(c)): code - 'a' + 10;
+    when (/^[0-9]$/): c - '0';
+    when (/^[A-Z]$/): c - 'A' + 10;
+    when (/^[a-z]$/): c - 'a' + 10;
     default: u8.max;
   };
 }
+
 // Example usage
-const buf: u8[] = "123";
-const radix: u8 = 10;
-const result = parseU64(buf, radix);
-if (typeof result === "error") {
-  console.log(result);
-} else {
-  console.log(result);
+
+function test(): void | error {
+  const result = try parseU64("1234", 10);
+  console.assert(result === 1234, "parseU64 failed");
 }
+test();
